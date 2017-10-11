@@ -1,0 +1,4 @@
+.form-panel:not(.active) {
+    display:none;
+}
+

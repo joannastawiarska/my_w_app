@@ -1,0 +1,32 @@
+Form
+
+<div class="form-panel active" style="height: 300px">Panel one content here</div>
+<div class="form-panel" style="height: 300px">Panel two content here</div>
+<div class="form-panel" style="height: 300px">
+        <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="date" id="sample1">
+                <label class="mdl-textfield__label" for="sample1"></label>
+              </div>
+</div>
+<div class="form-panel" style="height: auto;">
+    People:<br />
+
+            <div class="col-lg-4" *ngFor="let peop of people"><img src="{{peop.image}}"><br />
+                <input name="options" ng-control="options" type="radio" [value]="peop.count" > {{peop.count}}</div>
+
+</div>
+<div class="form-panel" style="height: 300px">
+    Budget:<br />
+    
+            <input class="mdl-slider mdl-js-slider" [(ngModel)]="event.budget" type="range"
+            min="0" max="100" value="0" tabindex="0" >
+    {{event.budget}}
+
+    <input [matDatepicker]="myDatepicker">
+    <mat-datepicker #myDatepicker></mat-datepicker>
+
+</div>
+<div class="form-panel" style="height: 300px">Panel six content here</div>
+<br>
+<button class="previous mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" (click)="previous()">Previous</button>
+<button class="next mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" (click)="next()">Next</button>
