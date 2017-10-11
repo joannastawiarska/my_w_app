@@ -1,12 +1,15 @@
 Form
 
+
 <div class="form-panel active" style="height: 300px">Panel one content here</div>
 <div class="form-panel" style="height: 300px">Panel two content here</div>
 <div class="form-panel" style="height: 300px">
-        <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="date" id="sample1">
-                <label class="mdl-textfield__label" for="sample1"></label>
-              </div>
+
+              <mat-form-field class="example-full-width">
+                    <input matInput [matDatepicker]="picker" placeholder="Choose a date">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker touchUi="true" #picker></mat-datepicker>
+                  </mat-form-field>
 </div>
 <div class="form-panel" style="height: auto;">
     People:<br />
@@ -17,16 +20,9 @@ Form
 </div>
 <div class="form-panel" style="height: 300px">
     Budget:<br />
-    
-            <input class="mdl-slider mdl-js-slider" [(ngModel)]="event.budget" type="range"
-            min="0" max="100" value="0" tabindex="0" >
-    {{event.budget}}
-
-    <input [matDatepicker]="myDatepicker">
-    <mat-datepicker #myDatepicker></mat-datepicker>
-
+    <mat-slider color="primary" value="50" thumbLabel aria-label="Primary color slider" [ngModel]="event.budget"></mat-slider>
+ 
 </div>
 <div class="form-panel" style="height: 300px">Panel six content here</div>
-<br>
-<button class="previous mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" (click)="previous()">Previous</button>
-<button class="next mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" (click)="next()">Next</button>
+<button mat-raised-button class="accent-color" (click)="previous()">Previous</button>
+<button mat-raised-button class="accent-color" (click)="next()">Next</button>

@@ -4,7 +4,7 @@ import {Component} from '@angular/core';
 @Component({
   moduleId: module.id,
   selector: 'slider-demo',
-  template: '<br />',
+  templateUrl: 'slider.component.html',
 })
 export class SliderComponent {
   demo: number;
