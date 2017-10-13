@@ -1,28 +1,215 @@
-Form
+<h1>Formularz</h1>
+
+<form (ngSubmit)="createEvent()" #itemForm="ngForm">
+<div style="background-color: #DADADA; margin-bottom: 30px;">
+
+  <div class="form-panel active" style="height: auto;">
+    Krok <b>1/7</b>: Wybierz rodzaj wydarzenia
+    <div class="row">
+      <!-- <div class="col-sm-4">
+        <span class="title tile" style="margin-top: 20px;"><mat-checkbox value="VOLUNTEERING" [(ngModel)]="event.type" name="type">Wolontariat</mat-checkbox> <br /><b>pracowniczy</b> </span>
+        <p>{{content?.formDto.events[0].description}}</p>
+      </div>
+      <div class="col-sm-4">
+        <span class="title tile" style="margin-top: 20px;"><mat-checkbox value="INTEGRATION" [(ngModel)]="event.type" name="type">Integracja</mat-checkbox></span>
+        <p>{{content?.formDto.events[1].description}}</p>
+      </div>
+      <div class="col-sm-4">
+        <span class="title tile" style="margin-top: 20px;"><mat-checkbox value="ENTERTAINMENT" [(ngModel)]="event.type" name="type">Rozrywka</mat-checkbox> </span>
+        <p>{{content?.formDto.events[2].description}}
+        </p>
+      </div>
+      <div class="col-sm-4">
+        <span class="title tile" style="margin-top: 20px;"><mat-checkbox value="WORKSHOPS" [(ngModel)]="event.type" name="type">Warsztaty</mat-checkbox> </span>
+        <p>{{content?.formDto.events[3].description}}</p>
+      </div>
+      <div class="col-sm-4">
+        <span class="title tile" style="margin-top: 20px;"><mat-checkbox value="TRAINING" [(ngModel)]="event.type" name="type">Szkolenia </mat-checkbox> <br /><b>z własnymi trenerami</b></span>
+        <p>
+          {{content?.formDto.events[4].description}}
+          <mat-form-field color="primary">
+            <input matInput placeholder="Ile sal potrzebujesz?" [(ngModel)]="event.details" name="details">
+            <mat-error>To pole jest wymagane</mat-error>
+          </mat-form-field>
+
+          <mat-form-field color="primary">
+            <input matInput placeholder="Na ilu uczestników jednoczenie?" [(ngModel)]="event.details" name="details">
+            <mat-error>To pole jest wymagane</mat-error>
+          </mat-form-field> 
+      </div> -->
+
+      <div class="col-sm-4" *ngFor="let ev of content?.formDto.events">
+          <span class="tile title" style="margin-top: 20px;"><mat-checkbox value="ev.name" [(ngModel)]="event.type" name="type"></mat-checkbox> <b>{{ev.translation}}</b></span>
+          <p *ngIf="ev.name == 'TRAINING'"> <mat-form-field color="primary">
+              <input matInput placeholder="Ile sal potrzebujesz?" [(ngModel)]="event.details" name="details">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+  
+            <mat-form-field color="primary">
+              <input matInput placeholder="Na ilu uczestników jednoczenie?" [(ngModel)]="event.details" name="details">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field></p>
+          <p>{{ev.description}}</p>
+        </div>
+    </div>
+  </div>
+  <div class="form-panel" style="height: auto;">
+    Krok <b>2/7</b>: Podaj liczbę noclegów<br />
+    <mat-form-field color="primary" style="padding-top: 10px;">
+      <input matInput placeholder="Liczba noclegów" [(ngModel)]="event.nights" required name="nights">
+      <mat-error>To pole jest wymagane</mat-error>
+    </mat-form-field>
+<p>{{content?.formDto.accommodationDescription}}</p>
+  </div>
+  <div class="form-panel" style="height: auto">
+
+    <mat-form-field class="example-full-width">
+
+      <input matInput [matDatepicker]="picker" placeholder="Wybierz datę" [(ngModel)]="event.date" required name="date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker touchUi="true" #picker></mat-datepicker>
+    </mat-form-field><br /> Sezon:
+    <br />
+    <mat-form-field>
+      <mat-select placeholder="Sezon..." ng-hide="!date">
+        <mat-option value="option">Letni</mat-option>
+        <mat-option value="option">Zimowy</mat-option>
+        <mat-option value="option">Poza sezonem</mat-option>
+      </mat-select>
+    </mat-form-field><br /> Zakres tygodnia:<br />
+    <mat-form-field>
+      <mat-select placeholder="Dni tygodnia..">
+        <mat-option value="option">Dni robocze</mat-option>
+        <mat-option value="option">Weekend</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <p>{{content?.formDto.dateFormDescription}}</p>
+  </div>
+  <div class="form-panel" style="height: auto;">
+    Ilość uczestników<br />
+
+    <!-- <div class="col-lg-4" *ngFor="let peop of people" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{peop.image}}"><br /> -->
+    <!-- <mat-radio-button name="options" ng-control="options" value="1" [ngModel]="event.budget">{{peop.count}}</mat-radio-button> -->
+    <!-- <input name="options" ng-control="options" type="radio" [value]="peop.count" [ngModel]="event.budget"> {{peop.count}}</div> -->
+    <!-- <mat-radio-group>
+                    <mat-radio-button value="1">Option 1</mat-radio-button>
+                    <mat-radio-button value="2">Option 2</mat-radio-button>
+                  </mat-radio-group>  -->
+                  <md-radio-group class="form-control" [(ngModel)]="selection.value" 
+                  id="radio1" formControlName="selection">
+                  <div class="col-lg-4" *ngFor="let peop of content?.formDto.sizes" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{peop.imageUrl}}"><br /> 
+                    <mat-radio-button ng-control="options" [value]="peop.globalId" [ngModel]="event.size" name="size" (blur)="addRecipient(recipient)" ngDefaultControl>{{peop.bounds}}</mat-radio-button> </div>
+  </md-radio-group>
+
+                  <!-- <div class="col-lg-4" *ngFor="let peop of content?.formDto.sizes" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{peop.imageUrl}}"><br /> 
+                   <mat-radio-button ng-control="options" [value]="peop.globalId" [ngModel]="event.size" name="size" (blur)="addRecipient(recipient)" ngDefaultControl>{{peop.bounds}}</mat-radio-button> </div>
+                    -->
+    <!-- <div class="col-lg-4" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{content?.formDto.sizes[0].imageUrl}}"><br />
+      <mat-radio-button value="SMALL" [ngModel]="event.size" name="size" (blur)="addRecipient(recipient)" ngDefaultControl>{{content?.formDto.sizes[0].bounds}}</mat-radio-button>
+      <input ng-control="options" type="radio" value="SMALL" [ngModel]="event.size" name="size">{{content?.formDto.sizes[0].bounds}} </div> 
+    <div class="col-lg-4" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{content?.formDto.sizes[0].imageUrl}}"><br />
+      <input ng-control="options" type="radio" value="MEDIUM" [ngModel]="event.size" name="size">{{content?.formDto.sizes[0].bounds}}</div>
+    <div class="col-lg-4" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{content?.formDto.sizes[0].imageUrl}}"><br />
+      <input ng-control="options" type="radio" value="LARGE" [ngModel]="event.size" name="size">{{content?.formDto.sizes[0].bounds}}</div>
+    <p>{{content?.formDto.participantsDescription}}</p> -->
 
 
-<div class="form-panel active" style="height: 300px">Panel one content here</div>
-<div class="form-panel" style="height: 300px">Panel two content here</div>
-<div class="form-panel" style="height: 300px">
+  </div>
 
-              <mat-form-field class="example-full-width">
-                    <input matInput [matDatepicker]="picker" placeholder="Choose a date">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker touchUi="true" #picker></mat-datepicker>
-                  </mat-form-field>
+
+  <div class="form-panel" style="height: auto">
+    Budżet:<br />
+    <mat-slider [(ngModel)]="event.budget" name="budget" min="0" max="10000" #slider color="primary" thumbLabel aria-label="Primary color slider" name="budget"
+      style="width: 30%;" (input)="onInputChange($event)"></mat-slider>
+    <br /><br />
+    Maksymalny budżet organizowanego wydarzenia:
+    <mat-form-field color="primary">
+    <input matInput [(ngModel)]="event.budget" type="number" [value]="slider.value" name="budget" style="text-align: center;">
+  </mat-form-field> złotych.
+    <!-- <mat-form-field color="primary">
+        <input matInput placeholder="Imię:" [(ngModel)]="event.budget" name="budget" [value]="slider.value">
+        {{slider.value}}</mat-form-field>  zł. -->
+
+    <p>{{content?.formDto.budgetDescription}}</p>
+  </div>
+
+
+
+  <div class="form-panel" style="height: auto"><br />
+    <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+      Uwagi:<br />
+      <mat-form-field color="primary" style="width: 50%;">
+        <textarea matInput placeholder="Twoje uwagi" style="height: 124px;" [ngModel]="event.additionalRequirements" name="additionalRequirements"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+      Dane kontaktowe:<br />
+      <mat-form-field color="primary" style="padding-top: 10px;">
+          <input matInput placeholder="Imię:" [(ngModel)]="event.name" required name="name">
+          <mat-error>To pole jest wymagane</mat-error>
+        </mat-form-field>
+
+        <mat-form-field color="primary" style="padding-top: 10px;">
+            <input matInput placeholder="Nazwisko:" [(ngModel)]="event.surname" required name="surname">
+            <mat-error>To pole jest wymagane</mat-error>
+          </mat-form-field>
+
+          <mat-form-field color="primary" style="padding-top: 10px;">
+              <input matInput placeholder="E-mail:" [(ngModel)]="event.email" required name="email">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+
+            <mat-form-field color="primary" style="padding-top: 10px;">
+                <input type="number" matInput placeholder="Telefon:" [(ngModel)]="event.phoneNumber" required name="phoneNumber">
+                <mat-error>To pole jest wymagane</mat-error>
+              </mat-form-field>
+    </div>
+
+    <p>{{content?.formDto.additionalDescription}}</p>
+    <button type="submit" class="btn btn-success" [disabled]="!itemForm.form.valid">Submit</button><br />
+  </div>
+  
+  
 </div>
-<div class="form-panel" style="height: auto;">
-    People:<br />
-
-            <div class="col-lg-4" *ngFor="let peop of people"><img src="{{peop.image}}"><br />
-                <input name="options" ng-control="options" type="radio" [value]="peop.count" > {{peop.count}}</div>
-
-</div>
-<div class="form-panel" style="height: 300px">
-    Budget:<br />
-    <mat-slider color="primary" value="50" thumbLabel aria-label="Primary color slider" [ngModel]="event.budget"></mat-slider>
- 
-</div>
-<div class="form-panel" style="height: 300px">Panel six content here</div>
+</form>
 <button mat-raised-button class="accent-color" (click)="previous()">Previous</button>
 <button mat-raised-button class="accent-color" (click)="next()">Next</button>
+
+
+
+
+<!-- <form [formGroup]="form" (submit)="submit(form.value)">
+    <div *ngFor="let skill of content?.formDto.events; let i=index">
+      <input type="checkbox" [formControl]="skill">sdsad
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+  
+  {{ form.value | json }}  -->
+
+
+
+<!-- <button (click)="showEditDialog = !showEditDialog; success = false; warning = false; info = false; danger = false;" type="button"
+  class="btn btn-outline btn-info"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj
+</button>
+<app-add-dialog [(visible)]="showEditDialog">
+  <div class="modal-header">
+    <h3 class="modal-title">Edytuj pole</h3>
+  </div>
+  <div class="modal-body">
+    <ul>
+      <label class="modal-label">Id użytkownika: </label>
+      <input class="modal-input" #userId/><br/>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button (click)="add(userId.value, itemId.value, reservationDate.value)" type="button" class="btn btn-outline btn-success"
+      routerLink="/blank" routerLinkActive="active"><span
+class="glyphicon glyphicon-ok-sign"></span> Ok
+</button>
+    <button (click)="disableModal()" type="button" class="btn btn-outline btn-warning"><span
+class="glyphicon glyphicon-remove-sign"></span> Anuluj
+</button>
+  </div>
+</app-add-dialog> -->
