@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class EventService {
 
-    private _createEventURL = 'http://localhost:8080/event';
+    private _createEventURL = 'http://localhost:8080/events';
 
     constructor(private http: Http) {
     }

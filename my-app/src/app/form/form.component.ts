@@ -20,7 +20,7 @@ export class FormComponent implements OnInit {
     responseStatus: Object = [];
     returnMsg: String;
     eventForm: FormGroup;
-    myOptions = [];
+    eventArray = [];
 
 
     constructor(private _contentService: ContentService, private _eventService: EventService, private fb: FormBuilder) {
@@ -29,16 +29,15 @@ export class FormComponent implements OnInit {
 
     createForm() {
         this.eventForm = this.fb.group({
-            eventTypeIds: '',
             organizer: this.fb.group({
-                name: '',
-                surname: '',
+                name: ['', Validators.required],
+                surname: ['', Validators.required],
                 phoneNumber: '',
-                email: ''
+                mail: ''
             }),
             nights: '',
             eventTime: '',
-            eventTypes: '',
+            eventTypeIds: this.returnEvent(),
             maxCost: '',
             rooms: '',
             eventSizeId: '',
@@ -67,7 +66,6 @@ export class FormComponent implements OnInit {
     ngOnInit() {
         this.event = new Event();
         this.getContent();
-        console.log(this.content.formDto.events);
     }
 
     private disableModal(): void {
@@ -78,26 +76,44 @@ export class FormComponent implements OnInit {
         this.showEditDialog = !this.showEditDialog;
     }
 
+    returnEvent() {
+        return this.eventArray;
+    }
+
+    select(event) {
+        if (event.selected === false) {
+            event.selected = true;
+            this.eventArray.push(event.globalId);
+            console.log(this.eventArray);
+            this.eventForm.value.eventTypeIds = this.eventArray;
+        }
+        else {
+            event.selected = false;
+            this.eventArray.pop();
+            console.log(this.eventArray);
+            this.eventForm.value.eventTypeIds = this.eventArray;
+        }
+    }
     getContent() {
 
         this._contentService.getContent()
             .subscribe(
             (content: Object) => {
-            this.content = content as Object;
+            this.content = content;
             console.log(this.content.formDto.events);
-            this.myOptions = this.content.formDto.events;
             },
             error => this.errorString = <any>error
             );
     }
 
     createEvent() {
+        this.eventForm.value.eventTypeIds = this.eventArray;
         const formModel = this.eventForm.value;
         console.log(formModel);
         this._eventService.createEvent(formModel).subscribe(
             data => console.log(this.responseStatus = data),
             err => console.log(err),
-            () => this.returnMsg = 'Item is added!'
+            () => this.returnMsg = 'Event is created!'
         );
     }
 
