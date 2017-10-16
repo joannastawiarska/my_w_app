@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 export class ContentService {
 
     private _startDescriptionURL = 'http://localhost:8080/items';
-     private _contentURL = 'http://10.40.157.31:8080/content';
+     private _contentURL = 'http://localhost:8080/content';
     // private _contentURL = 'http://localhost:4200/src/app/content/content.json';
 
     constructor(private http: Http) {

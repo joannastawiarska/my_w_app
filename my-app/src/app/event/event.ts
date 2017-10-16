@@ -1,8 +1,4 @@
 export class Event {
-    name: string;
-    surname: string;
-    phoneNumber: string;
-    mail: string;
     budget: number;
     type: boolean;
     details: string;
@@ -11,4 +7,12 @@ export class Event {
     nights: number;
     additionalRequirements: string;
     maxCost: number;
+    organizer: Organizer;
 }
+
+  export class Organizer {
+    name: string;
+    surname: string;
+    phoneNumber: string;
+    email: String;
+  }

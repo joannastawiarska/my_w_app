@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Event } from '../event/event';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Event, Organizer } from '../event/event';
 import { ContentService } from '../content/content.service';
 import { EventService } from '../event/event.service';
-import {ReactiveFormsModule, FormsModule, FormBuilder, Validators} from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-form',
@@ -13,51 +13,40 @@ import {ReactiveFormsModule, FormsModule, FormBuilder, Validators} from '@angula
 export class FormComponent implements OnInit {
 
     @Input() event: Event;
+    @Input() organizer: Organizer;
     showEditDialog = false;
     content;
     errorString: string;
     responseStatus: Object = [];
     returnMsg: String;
-form;
+    eventForm: FormGroup;
+    myOptions = [];
+
 
     constructor(private _contentService: ContentService, private _eventService: EventService, private fb: FormBuilder) {
-        console.clear();
-        
-                this.form = this.fb.group({
-                  skills: this.buildSkills()
-                });
-        
-                console.log(this.form.get('skills'));
-                  }
+        this.createForm();
+    }
 
-                  buildSkills() {
-                    let arr;
-                    this._contentService.getContent()
-                    .subscribe(
-                    content => { arr = content.formDto.events.map(s => {
-                           return this.fb.control(s.selected);
-                         });
-                         return this.fb.array(arr); }
-                    );
-                    // const arr = this.content.formDto.events.map(s => {
-                    //   return this.fb.control(s.selected);
-                    // });
-                    // return this.fb.array(arr);
-                  }
-
-                  submit(value) {
-                    
-                     const f = Object.assign({}, value, {
-                       skills: value.skills.map((s, i) => {
-                       return {
-                         id: this.content.formDto.events[i].id,
-                         selected: s
-                       };
-                     }),
-                     });
-                     
-                      console.log(f);
-                   }
+    createForm() {
+        this.eventForm = this.fb.group({
+            eventTypeIds: '',
+            organizer: this.fb.group({
+                name: '',
+                surname: '',
+                phoneNumber: '',
+                email: ''
+            }),
+            nights: '',
+            eventTime: '',
+            eventTypes: '',
+            maxCost: '',
+            rooms: '',
+            eventSizeId: '',
+            additionalRequirements: '',
+            days: '',
+            season: ''
+        });
+    }
 
     next = (): void => {
         const cur = $('.form-panel').index($('.form-panel.active'));
@@ -78,7 +67,7 @@ form;
     ngOnInit() {
         this.event = new Event();
         this.getContent();
-        
+        console.log(this.content.formDto.events);
     }
 
     private disableModal(): void {
@@ -89,35 +78,32 @@ form;
         this.showEditDialog = !this.showEditDialog;
     }
 
-    getContent = () => {
+    getContent() {
 
         this._contentService.getContent()
             .subscribe(
-            items => { this.content = items; console.log(this.content); },
+            (content: Object) => {
+            this.content = content as Object;
+            console.log(this.content.formDto.events);
+            this.myOptions = this.content.formDto.events;
+            },
             error => this.errorString = <any>error
             );
-        // .subscribe(
-        //     data => { this.start = data; },
-        //     err => console.error(err),
-        //     () => console.log(this.start));
     }
 
     createEvent() {
-        this._eventService.createEvent(this.event).subscribe(
-          data => console.log(this.responseStatus = data),
-          err => console.log(err),
-          () => this.returnMsg = 'Item is added!'
+        const formModel = this.eventForm.value;
+        console.log(formModel);
+        this._eventService.createEvent(formModel).subscribe(
+            data => console.log(this.responseStatus = data),
+            err => console.log(err),
+            () => this.returnMsg = 'Item is added!'
         );
-      }
+    }
 
-      onInputChange(event: any) {
+    onInputChange(event: any) {
         console.log('This is emitted as the thumb slides');
-      }
+    }
 }
-
-
-class MyRadioComponent {
-    selection = {"value":"A"};
-  }
 
 
