@@ -1,5 +1,5 @@
-import { Component , OnInit } from '@angular/core';
-import {ContentService} from '../content/content.service';
+import { Component, OnInit } from '@angular/core';
+import { ContentService } from '../content/content.service';
 
 @Component({
   selector: 'app-start',
@@ -9,9 +9,11 @@ import {ContentService} from '../content/content.service';
 })
 export class StartComponent implements OnInit {
 
-  // start: Start[];
   content: Object;
   errorString: string;
+  responseStatus: Object = [];
+  returnMsg: String;
+
   constructor(private _contentService: ContentService) {
 
   }
@@ -19,19 +21,23 @@ export class StartComponent implements OnInit {
   ngOnInit() {
     this.getContent();
 
-    }
+  }
 
-    getContent = () => {
+  getContent = () => {
 
-      this._contentService.getContent()
+    this._contentService.getContent()
       .subscribe(
-        items => {this.content = items; console.log(this.content); },
-        error => this.errorString = <any>error
-        );
-      // .subscribe(
-      //     data => { this.start = data; },
-      //     err => console.error(err),
-      //     () => console.log(this.start));
-                    }
+      items => { this.content = items; console.log(this.content); },
+      error => this.errorString = <any>error
+      );
+  }
+
+  editHomepage(content: Object) {
+    this._contentService.createEvent(content).subscribe(
+      data => console.log(this.responseStatus = data),
+      err => console.log(err),
+      () => this.returnMsg = 'Event is created!'
+    );
+  }
 
 }

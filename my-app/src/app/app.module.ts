@@ -42,7 +42,6 @@ import { AppComponent } from './app.component';
 import { StartComponent } from './start/start.component';
 import { FormComponent } from './form/form.component';
 import { RouterModule } from '@angular/router';
-import { StartService } from './start/start.service';
 import {EditDialogComponent} from './dialog/edit-dialog/edit-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import * as $ from 'jquery';
@@ -85,7 +84,6 @@ MatStepperModule,
 HttpModule,
 ReactiveFormsModule
   ],
-  providers: [StartService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

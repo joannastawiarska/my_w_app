@@ -2,21 +2,21 @@
 
 <div style="background-color: #DADADA; margin-bottom: 30px;">
   <form [formGroup]="eventForm" (ngSubmit)="createEvent()" validate>
-    <div class="form-panel active" style="height: auto;">
+    <div class="form-panel active" id="first" style="height: auto;">
       Krok <b>1/7</b>: Wybierz rodzaj wydarzenia
       <div class="form-group">
 
 
-        <div class="col-sm-4" *ngFor="let ev of content?.formDto.events" >
+        <div class="col-sm-4" *ngFor="let ev of content?.formDto.events">
           <span class="tile title" style="margin-top: 20px;"><mat-checkbox value="ev.name" (click)="select(ev)"></mat-checkbox> <b><a>{{ev.translation}}</a></b></span>
-          <p *ngIf="ev.name == 'TRAINING'">
+          <p *ngIf="ev.translation == 'Szkolenia z własnymi trenerami'">
             <mat-form-field color="primary">
-              <input matInput placeholder="Ile sal potrzebujesz?" [(ngModel)]="event.details" name="details">
+              <input matInput placeholder="Ile sal potrzebujesz?"  name="details">
               <mat-error>To pole jest wymagane</mat-error>
             </mat-form-field>
 
             <mat-form-field color="primary">
-              <input matInput placeholder="Na ilu uczestników jednoczenie?" [(ngModel)]="event.details" name="details">
+              <input matInput placeholder="Na ilu uczestników jednoczenie?" name="details">
               <mat-error>To pole jest wymagane</mat-error>
             </mat-form-field>
           </p>
@@ -24,7 +24,7 @@
         </div>
       </div>
       <mat-form-field color="primary" style="padding-top: 10px;">
-      <input matInput formControlName="eventTypeIds" (input)="onInputChange($event)">{{eventArray}}</mat-form-field>
+        <input matInput formControlName="eventTypeIds" (input)="onInputChange($event)">{{eventArray}}</mat-form-field>
     </div>
 
     <div class="form-panel" style="height: auto">
@@ -41,25 +41,31 @@
 
     <div class="form-panel" style="height: auto">
       <div class="form-group">
-        <mat-form-field class="example-full-width">
 
-          <input matInput [matDatepicker]="picker" placeholder="Wybierz datę" formControlName="eventTime">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker touchUi="true" #picker></mat-datepicker>
-        </mat-form-field><br /> Sezon:
-        <br />
-        <mat-form-field >
-          <mat-select  matInput placeholder="Sezon..." ng-hide="!date" formControlName="season" >
-            <mat-option *ngFor="let seas of content?.formDto.seasons" [value]="seas.globalId" >{{seas.description}}</mat-option>
-          </mat-select>
-        </mat-form-field><br /> Zakres tygodnia:<br />
-        <mat-form-field>
-          <mat-select placeholder="Dni tygodnia..">
-            <mat-option value="option">Dni robocze</mat-option>
-            <mat-option value="option">Weekend</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px; height: 272px;"><br /> Podaj konkretną datę wydarzenia:<br />
+          <mat-form-field class="example-full-width">
+            <input matInput [matDatepicker]="picker" placeholder="Wybierz datę" formControlName="eventTime">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker touchUi="true" #picker></mat-datepicker>
+          </mat-form-field>
+        </div> 
+
+        <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><br /> Okreś orientacyjny termin wydarzenia:
+          <mat-form-field>
+            <mat-select matInput placeholder="Sezon..." ng-hide="!date" formControlName="seasonId">
+              <mat-option *ngFor="let seas of content?.formDto.seasons" [value]="seas.globalId" (click)="addSeason(seas)">{{seas.description}}</mat-option>
+            </mat-select>
+          </mat-form-field><br /> Zakres tygodnia:<br />
+          <mat-form-field>
+            <mat-select placeholder="Dni tygodnia.." formControlName="kindOfDays">
+              <mat-option value="WORKING_DAY" (click)="addDays('Dni robocze')">Dni robocze</mat-option>
+              <mat-option value="WEEKEND" (click)="addDays('Weekend')">Weekend</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
         <p>{{content?.formDto.dateFormDescription}}</p>
+
       </div>
     </div>
 
@@ -68,78 +74,109 @@
         Ilość uczestników<br />
         <div class="form-group">
           <div class="col-lg-4" *ngFor="let peop of content?.formDto.sizes" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;"><img src="{{peop.imageUrl}}"><br />
-            <input type="radio" ng-control="options" class="form-control" formControlName="eventSizeId" [value]="peop.globalId" 
-              ngDefaultControl>{{peop.bounds}}
+            <input type="radio" ng-control="options" formControlName="eventSizeId" [value]="peop.globalId" ngDefaultControl
+              (click)="addBound(peop)">{{peop.bounds}}
+              <!-- <mat-radio-button ng-control="options" formControlName="eventSizeId" [value]="peop.globalId" ngDefaultControl (click)="addBound(peop)">{{peop.bounds}}</mat-radio-button> -->
           </div>
 
         </div>
       </div>
     </div>
 
-      <div class="form-panel" style="height: auto">
-        <div class="form-group">
-            Budżet:<br />
-            <mat-slider formControlName="maxCost" min="0" max="10000" #slider color="primary" thumbLabel aria-label="Primary color slider"
-              style="width: 30%;" (input)="onInputChange($event)"></mat-slider>
-            <br /><br />
-            Maksymalny budżet organizowanego wydarzenia:
-            <mat-form-field color="primary">
-            <input matInput  formControlName="maxCost" [value]="slider.value" style="text-align: center;">
-          </mat-form-field> złotych.
-           
-            <p>{{content?.formDto.budgetDescription}}</p>
+    <div class="form-panel" style="height: auto">
+      <div class="form-group">
+        Budżet:<br />
+        <mat-slider formControlName="maxCost" min="0" max="10000" #slider color="primary" thumbLabel aria-label="Primary color slider"
+          style="width: 30%;" (input)="onInputChange($event)"></mat-slider>
+        <br /><br /> Maksymalny budżet organizowanego wydarzenia:
+        <mat-form-field color="primary">
+          <input matInput formControlName="maxCost" [value]="slider.value" style="text-align: center;">
+        </mat-form-field> złotych.
+
+        <p>{{content?.formDto.budgetDescription}}</p>
+      </div>
+    </div>
+
+    <div class="form-panel" id="last" style="height: auto">
+      <div class="form-group">
+        <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+          Uwagi:<br />
+          <mat-form-field color="primary" style="width: 50%;">
+            <textarea matInput placeholder="Twoje uwagi" style="height: 123px;" formControlName="additionalRequirements"></textarea>
+          </mat-form-field>
         </div>
+
+        <div formGroupName="organizer">
+          <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+            Dane kontaktowe:<br />
+            <mat-form-field color="primary" style="padding-top: 10px;">
+              <input matInput placeholder="Imię:" formControlName="name">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+
+            <mat-form-field color="primary" style="padding-top: 10px;">
+              <input matInput placeholder="Nazwisko:" formControlName="surname">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+
+            <mat-form-field color="primary" style="padding-top: 10px;">
+              <input matInput placeholder="E-mail:" formControlName="mail">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+
+            <mat-form-field color="primary" style="padding-top: 10px;">
+              <input matInput placeholder="Telefon:" formControlName="phoneNumber">
+              <mat-error>To pole jest wymagane</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        
+        
+        
+      </div>
+      <p>{{content?.formDto.additionalDescription}}</p>
+    </div>
+
+    <div class="form-panel" id="last" style="height: auto">
+
+      <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+        <b>Organizator:</b><br />
+        <mat-form-field color="primary"><input matInput readonly placeholder="Imię:"> {{eventForm.value.organizer.name}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Nazwisko:"> {{eventForm.value.organizer.surname}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Numer telefonu:"> {{eventForm.value.organizer.phoneNumber}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Adres e-mail:"> {{eventForm.value.organizer.mail}}</mat-form-field>
+
+        <mat-form-field color="primary" style="width: 50%;">
+          <textarea matInput readonly placeholder="Twoje uwagi" style="height: 124px;">{{eventForm.value.additionalRequirements}}</textarea>
+        </mat-form-field>
+
       </div>
 
-      <div class="form-panel" style="height: auto">
-        <div class="form-group">
-            <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
-                Uwagi:<br />
-                <mat-form-field color="primary" style="width: 50%;">
-                  <textarea matInput placeholder="Twoje uwagi" style="height: 124px;" formControlName="additionalRequirements"></textarea>
-                </mat-form-field>
-              </div>
 
-              <div formGroupName="organizer">
-                  <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
-                    Dane kontaktowe:<br />
-                    <mat-form-field color="primary" style="padding-top: 10px;">
-                        <input matInput placeholder="Imię:" formControlName="name">
-                        <mat-error>To pole jest wymagane</mat-error>
-                      </mat-form-field>
-              
-                      <mat-form-field color="primary" style="padding-top: 10px;">
-                          <input matInput placeholder="Nazwisko:" formControlName="surname">
-                          <mat-error>To pole jest wymagane</mat-error>
-                        </mat-form-field>
-              
-                        <mat-form-field color="primary" style="padding-top: 10px;">
-                            <input matInput placeholder="E-mail:" formControlName="mail">
-                            <mat-error>To pole jest wymagane</mat-error>
-                          </mat-form-field>
-              
-                          <mat-form-field color="primary" style="padding-top: 10px;">
-                              <input type="number" matInput placeholder="Telefon:" formControlName="phoneNumber">
-                              <mat-error>To pole jest wymagane</mat-error>
-                            </mat-form-field>
-                  </div>
-                </div>
-              
-                  <p>{{content?.formDto.additionalDescription}}</p>
-                  <button mat-raised-button class="accent-color" [disabled]="!eventForm.valid">Submit</button><br />
-        </div>
+      <div class="col-lg-6" style="background-color: #DADADA; padding-bottom: 20px; margin-bottom: 10px;">
+        <mat-form-field color="primary"><input matInput readonly placeholder="Data wydarzenia:"> {{summing.date}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Sezon:"> {{summing.season}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Zakres tygodnia:"> {{summing.days}}</mat-form-field>
+        <mat-form-field color="primary"><input matInput readonly placeholder="Ilość uczestników:"> {{summing.bounds}}</mat-form-field>
       </div>
+
+      <p class="dark-primary-color" [hidden]="eventForm.valid">Nie wypełniłeś wszystkich niezbędnych pól formularza. </p>
+      <button mat-raised-button class="accent-color" [disabled]="!eventForm.valid">Submit</button><br />
+
+    </div>
 
 
   </form>
 
   heroForm value: {{ eventForm.value | json}}
-  </div>
-  <button mat-raised-button class="accent-color" (click)="previous()">Previous</button>
-  <button mat-raised-button class="accent-color" (click)="next()">Next</button>
+</div>
+<button mat-raised-button class="accent-color" (click)="previous()" [hidden]="isFirst()">Previous</button>
+<button mat-raised-button class="accent-color next" (click)="next()" [hidden]="isLast()">Next</button>
+<button mat-raised-button class="accent-color" (click)="[next(), addDate()]" [hidden]="!isLast()">Podsumowanie</button>
 
 
-  <!-- <h1>Formularz</h1>
+<!-- <h1>Formularz</h1>
 
 <form (ngSubmit)="createEvent()" #itemForm="ngForm">
     <div formGroupName="eventForm">
@@ -285,28 +322,3 @@
   
   {{ form.value | json }}  -->
 
-
-
-  <!-- <button (click)="showEditDialog = !showEditDialog; success = false; warning = false; info = false; danger = false;" type="button"
-  class="btn btn-outline btn-info"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj
-</button>
-<app-add-dialog [(visible)]="showEditDialog">
-  <div class="modal-header">
-    <h3 class="modal-title">Edytuj pole</h3>
-  </div>
-  <div class="modal-body">
-    <ul>
-      <label class="modal-label">Id użytkownika: </label>
-      <input class="modal-input" #userId/><br/>
-    </ul>
-  </div>
-  <div class="modal-footer">
-    <button (click)="add(userId.value, itemId.value, reservationDate.value)" type="button" class="btn btn-outline btn-success"
-      routerLink="/blank" routerLinkActive="active"><span
-class="glyphicon glyphicon-ok-sign"></span> Ok
-</button>
-    <button (click)="disableModal()" type="button" class="btn btn-outline btn-warning"><span
-class="glyphicon glyphicon-remove-sign"></span> Anuluj
-</button>
-  </div>
-</app-add-dialog> -->

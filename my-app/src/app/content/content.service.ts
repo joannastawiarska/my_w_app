@@ -8,38 +8,22 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class ContentService {
 
-    private _startDescriptionURL = 'http://localhost:8080/items';
      private _contentURL = 'http://localhost:8080/content';
-    // private _contentURL = 'http://localhost:4200/src/app/content/content.json';
+     private _editHomepageURL = 'http://localhost:8080/content/home';
 
     constructor(private http: Http) {
             }
 
     getContent() {
-        // this.http.get(this._startDescriptionURL)
-        // .map((res: Response) => res.json()).catch(this.handleError)
-        // .subscribe(
-        //   data => { this.status = data; },
-        //   err => console.error(err),
-        //   () => console.log(this.status));
-        //   return this.status;
-
-        //   return this.http.get(this._startDescriptionURL)
-        //   .map((res: Response) => res.json())
-        //   .catch(this.handleError);
-
         return this.http.get(this._contentURL)
                 .map(res => <Object>res.json())
                  .catch(this.handleError);
     }
 
-    // getObject() {
-    //     return this.http.get(this._startDescriptionURL)
-    //         .map(res => <Object>res.json())
-    //         .catch(this.handleError);
-    // }
-
-
+    createEvent(content: Object) {
+                return this.http.post(this._editHomepageURL, content, {
+                });
+            }
 
     private handleError(error: any) {
         console.log('Yup an error occurred', error);
