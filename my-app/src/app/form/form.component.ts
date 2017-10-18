@@ -23,7 +23,9 @@ export class FormComponent implements OnInit {
     returnMsg: String;
     eventForm: FormGroup;
     eventArray = [];
+    contentEventArray = [];
     summing: Summing = { season: '', bounds: '', days: '', date: '' };
+    progressBar = 0;
 
     constructor(private _contentService: ContentService, private _eventService: EventService, private fb: FormBuilder,
         private datePipe: DatePipe) {
@@ -37,10 +39,12 @@ export class FormComponent implements OnInit {
     }
 
     isLast(): boolean {
-        if ($('#last').hasClass('active')) {
+        if ($('#last').hasClass('active') || $('#last2').hasClass('active')) {
             return true;
         }
     }
+
+
 
     createForm() {
         this.eventForm = this.fb.group({
@@ -69,6 +73,10 @@ export class FormComponent implements OnInit {
             $('.form-panel').removeClass('active').hide();
             $('.form-panel').eq(cur + 1).fadeIn().addClass('active');
         }
+        this.progressBar += 15;
+        if (this.progressBar >= 80) {
+            this.progressBar = 100;
+        }
     }
 
     previous = (): void => {
@@ -76,6 +84,10 @@ export class FormComponent implements OnInit {
         if (cur !== 0) {
             $('.form-panel').removeClass('active').hide();
             $('.form-panel').eq(cur - 1).fadeIn().addClass('active');
+        }
+        this.progressBar -= 15;
+        if (this.progressBar === 100) {
+            this.progressBar = 90;
         }
     }
 
@@ -99,15 +111,14 @@ export class FormComponent implements OnInit {
     select(event) {
         if (event.selected === false) {
             event.selected = true;
+            this.contentEventArray.push(event.translation);
             this.eventArray.push(event.globalId);
-            console.log(this.eventForm);
-            console.log(this.eventArray);
             this.eventForm.value.eventTypeIds = this.eventArray;
         }
         else {
             event.selected = false;
             this.eventArray.pop();
-            console.log(this.eventArray);
+            this.contentEventArray.pop();
             this.eventForm.value.eventTypeIds = this.eventArray;
         }
     }

@@ -20,6 +20,7 @@ export class EventService {
         return this.http.post(this._createEventURL, event, {
         });
     }
+    
     private handleError(error: Response) {
         console.error(error);
         return Observable.throw(error.json().error || 'Server error');
